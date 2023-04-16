@@ -66,20 +66,6 @@ public class Assignment5 extends AssignmentEndpoint {
                 } else {
                     return failed(this).feedback("challenge.close").build();
                 }
-
-            PreparedStatement statement =
-                    connection.prepareStatement(
-                            "select password from challenge_users where userid = '"
-                                    + username_login
-                                    + "' and password = '"
-                                    + password_login
-                                    + "'");
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                return success(this).feedback("challenge.solved").feedbackArgs(flags.getFlag(5)).build();
-            } else {
-                return failed(this).feedback("challenge.close").build();
             }
         }
     }
