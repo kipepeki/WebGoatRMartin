@@ -44,12 +44,39 @@ public class Assignment5 extends AssignmentEndpoint {
   private final LessonDataSource dataSource;
   private final Flags flags;
 
+<<<<<<< Updated upstream
   @PostMapping("/challenge/5")
   @ResponseBody
   public AttackResult login(
       @RequestParam String username_login, @RequestParam String password_login) throws Exception {
     if (!StringUtils.hasText(username_login) || !StringUtils.hasText(password_login)) {
       return failed(this).feedback("required4").build();
+=======
+    @PostMapping("/challenge/5")
+    @ResponseBody
+    public AttackResult login(
+            @RequestParam String username_login, @RequestParam String password_login) throws Exception {
+        if (!StringUtils.hasText(username_login) || !StringUtils.hasText(password_login)) {
+            return failed(this).feedback("required4").build();
+        }
+        if (!"Larry".equals(username_login)) {
+            return failed(this).feedback("user.not.larry").feedbackArgs(username_login).build();
+        }
+        try (var connection = dataSource.getConnection()) {
+            
+            String query = "select password from challenge_users where userid = ? and password = ?";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, username_login);
+                statement.setString(2, password_login);
+                ResultSet resultSet = statement.executeQuery(query);
+                if (resultSet.next()) {
+                    return success(this).feedback("challenge.solved").feedbackArgs(flags.getFlag(5)).build();
+                } else {
+                    return failed(this).feedback("challenge.close").build();
+                }
+            }
+        }
+>>>>>>> Stashed changes
     }
     if (!"Larry".equals(username_login)) {
       return failed(this).feedback("user.not.larry").feedbackArgs(username_login).build();
