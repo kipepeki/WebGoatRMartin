@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License along with this program; if
  * not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  * 02111-1307, USA.
- * 
  *
  * Getting Source ==============
  *
@@ -31,8 +30,6 @@ import org.owasp.webgoat.container.LessonDataSource;
 import org.owasp.webgoat.container.assignments.AssignmentEndpoint;
 import org.owasp.webgoat.container.assignments.AttackResult;
 import org.owasp.webgoat.lessons.challenges.Flags;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,16 +55,19 @@ public class Assignment5 extends AssignmentEndpoint {
             return failed(this).feedback("user.not.larry").feedbackArgs(username_login).build();
         }
         try (var connection = dataSource.getConnection()) {
-            String query = "select password from challenge_users where userid = ? and password = ?";
-            try (PreparedStatement statement = connection.prepareStatement(query)) {
-                statement.setString(1, username_login);
-                statement.setString(2, password_login);
-                ResultSet resultSet = statement.executeQuery(query);
-                if (resultSet.next()) {
-                    return success(this).feedback("challenge.solved").feedbackArgs(flags.getFlag(5)).build();
-                } else {
-                    return failed(this).feedback("challenge.close").build();
-                }
+            PreparedStatement statement =
+                    connection.prepareStatement(
+                            "select password from challenge_users where userid = '"
+                                    + username_login
+                                    + "' and password = '"
+                                    + password_login
+                                    + "'");
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return success(this).feedback("challenge.solved").feedbackArgs(flags.getFlag(5)).build();
+            } else {
+                return failed(this).feedback("challenge.close").build();
             }
         }
     }
