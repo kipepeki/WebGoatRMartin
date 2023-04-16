@@ -120,7 +120,7 @@ Now we are ready to run the project. WebGoat is using Spring Boot.
 Note: The above link will redirect you to login page if you are not logged in. LogIn/Create account to proceed.
 
 To change the IP address add the following variable to the `WebGoat/webgoat-container/src/main/resources/application.properties` file:
-
+Prueba
 ```
 server.address=x.x.x.x
 ```
