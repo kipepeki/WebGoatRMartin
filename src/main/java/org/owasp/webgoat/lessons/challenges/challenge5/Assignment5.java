@@ -15,7 +15,6 @@
  * not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  * 02111-1307, USA.
  *
- *
  * Getting Source ==============
  *
  * Source for this application is maintained at https://github.com/WebGoat/WebGoat, a repository for free software projects.
@@ -31,8 +30,6 @@ import org.owasp.webgoat.container.LessonDataSource;
 import org.owasp.webgoat.container.assignments.AssignmentEndpoint;
 import org.owasp.webgoat.container.assignments.AttackResult;
 import org.owasp.webgoat.lessons.challenges.Flags;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,17 +41,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class Assignment5 extends AssignmentEndpoint {
 
-  private final LessonDataSource dataSource;
-  private final Flags flags;
+    private final LessonDataSource dataSource;
+    private final Flags flags;
 
-<<<<<<< Updated upstream
-  @PostMapping("/challenge/5")
-  @ResponseBody
-  public AttackResult login(
-      @RequestParam String username_login, @RequestParam String password_login) throws Exception {
-    if (!StringUtils.hasText(username_login) || !StringUtils.hasText(password_login)) {
-      return failed(this).feedback("required4").build();
-=======
     @PostMapping("/challenge/5")
     @ResponseBody
     public AttackResult login(
@@ -66,15 +55,12 @@ public class Assignment5 extends AssignmentEndpoint {
             return failed(this).feedback("user.not.larry").feedbackArgs(username_login).build();
         }
         try (var connection = dataSource.getConnection()) {
-<<<<<<< Updated upstream
-            
-=======
->>>>>>> Stashed changes
             String query = "select password from challenge_users where userid = ? and password = ?";
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setString(1, username_login);
                 statement.setString(2, password_login);
                 ResultSet resultSet = statement.executeQuery(query);
+
                 if (resultSet.next()) {
                     return success(this).feedback("challenge.solved").feedbackArgs(flags.getFlag(5)).build();
                 } else {
@@ -82,26 +68,5 @@ public class Assignment5 extends AssignmentEndpoint {
                 }
             }
         }
->>>>>>> Stashed changes
     }
-    if (!"Larry".equals(username_login)) {
-      return failed(this).feedback("user.not.larry").feedbackArgs(username_login).build();
-    }
-    try (var connection = dataSource.getConnection()) {
-      PreparedStatement statement =
-          connection.prepareStatement(
-              "select password from challenge_users where userid = '"
-                  + username_login
-                  + "' and password = '"
-                  + password_login
-                  + "'");
-      ResultSet resultSet = statement.executeQuery();
-
-      if (resultSet.next()) {
-        return success(this).feedback("challenge.solved").feedbackArgs(flags.getFlag(5)).build();
-      } else {
-        return failed(this).feedback("challenge.close").build();
-      }
-    }
-  }
 }
